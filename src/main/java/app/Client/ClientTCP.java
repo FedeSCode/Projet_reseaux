@@ -1,3 +1,4 @@
+package app.Client;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -8,13 +9,14 @@ public class ClientTCP {
     
     public static void main(String[] args) throws IOException {
 
-        if(args.length != 2){
+      /*  if(args.length != 2){
             throw new IllegalArgumentException("c'est deux argument qu'il faut mettre!!");
         }
         else{
             System.out.println("le clientTCP.py est en commentaire a la fin du ClientTCP.java");
-        }
-        int port = Integer.parseInt(args[1]);
+        }*/
+//        int port = Integer.parseInt(args[1]);
+        int port = 12345;
 
         Socket clientSocket = new Socket();
 
