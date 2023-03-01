@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.text.BreakIterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -43,41 +42,8 @@ public class ServeurTCP  {
             Socket sc = serverSocket.accept();
 
             System.out.println("new client"+nbClient);
-            ClientHandler handler = new ClientHandler(sc);
+            app.Serveur.ClientHandler handler = new app.Serveur.ClientHandler(sc);
             executorService.submit(handler);
-        }
-    }
-}
-
-
-
-
-
-class ClientHandler implements Runnable {
-    private final Socket clientSocket;
-
-    public ClientHandler(Socket socket){
-        this.clientSocket = socket;
-    }
-
-    @Override
-    public void run(){
-        InputStream inputStream = null;
-        try {
-            inputStream = this.clientSocket.getInputStream();
-            StringBuilder textString = new StringBuilder();
-            do {
-                char c = (char) inputStream.read();
-                textString.append(c);
-                if (c == '\n') {
-                    System.out.print(">>" + textString);
-                    textString = new StringBuilder();
-                }
-            } while (!textString.toString().equals("@ServDis"));
-            inputStream.close();
-            this.clientSocket.close();
-        }catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }
