@@ -48,36 +48,3 @@ public class ServeurTCP  {
         }
     }
 }
-
-
-
-
-
-class ClientHandler implements Runnable {
-    private final Socket clientSocket;
-
-    public ClientHandler(Socket socket){
-        this.clientSocket = socket;
-    }
-
-    @Override
-    public void run(){
-        InputStream inputStream = null;
-        try {
-            inputStream = this.clientSocket.getInputStream();
-            StringBuilder textString = new StringBuilder();
-            do {
-                char c = (char) inputStream.read();
-                textString.append(c);
-                if (c == '\n') {
-                    System.out.print(">>" + textString);
-                    textString = new StringBuilder();
-                }
-            } while (!textString.toString().equals("@ServDis"));
-            inputStream.close();
-            this.clientSocket.close();
-        }catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-}

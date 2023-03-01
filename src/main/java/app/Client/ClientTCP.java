@@ -39,26 +39,3 @@ public class ClientTCP {
     }
 }
 
-
-/*Python CLinet TCP*/
-/* 
- # coding: utf-8
-import socket
-
-HOST,PORT = ('localhost',1234)
-server_addres = (HOST,PORT)
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((server_addres))
-print("Connection vers : " + HOST + ": " + str(PORT) + " Reussie \n\n")
-
-while True:
-    dataToSend = (input("ENTREZ MESSAGE A ENVOYER: ") + "\n")  
-    if dataToSend == "client.dis\n":
-            print ("The client disconnected...\b")
-            client.close()
-            break
-    else:
-        client.sendall(dataToSend.encode("utf-8"))
-client.close()
-*/
