@@ -14,25 +14,19 @@ public class ClientTCP {
         else{
             System.out.println("le clientTCP.py est en commentaire a la fin du ClientTCP.java");
         }
-
         int port = Integer.parseInt(args[1]);
 
         Socket clientSocket = new Socket();
 
-
         InetSocketAddress localhost= new InetSocketAddress(args[0],port);
         clientSocket.connect(localhost);
         Scanner scanner= new Scanner(System.in);
-        
-
-
 
         while (scanner.hasNextLine()){
             String  textScanner = scanner.nextLine()+"\n";
             OutputStream outputStream = clientSocket.getOutputStream();
             outputStream.write(textScanner.getBytes()); 
         }
-
 
         scanner.close();
         clientSocket.close();

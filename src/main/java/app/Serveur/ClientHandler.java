@@ -11,27 +11,23 @@ public class ClientHandler extends Thread {
     }
 
     @Override
-   public void run() {
-    String textString ="";
+    public void run() {
+        String textString ="";
 
-    while (true) {
-        try {
-            InputStream inputStream = clientSocket.getInputStream();
-            char charRecive = (char) inputStream.read();
-        if (charRecive !=  '\n'){
-            textString +=  charRecive; 
-                    
-        }else{
-            System.out.println("> " + textString);
-            textString = "";
+        while (true) {
+            try {
+                InputStream inputStream = clientSocket.getInputStream();
+                char charReceive = (char) inputStream.read();
+                if (charReceive !=  '\n'){
+                    textString +=  charReceive;
+                }else{
+                    System.out.println("> " + textString);
+                    textString = "";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    
    }
 
-    
 }
