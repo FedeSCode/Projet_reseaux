@@ -32,8 +32,6 @@ public class ServerTCP {
 
             Socket sc = serverSocket.accept();
 
-
-
             System.out.println("new client"+nbClient);
             app.Server.ClientHandler handler = new app.Server.ClientHandler(sc);
             executorService.submit(handler);

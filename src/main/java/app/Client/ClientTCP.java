@@ -6,32 +6,45 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class ClientTCP {
-    
+    private String user;
+    private String messageToSend;
+    Publisher publish = new Publisher(user,messageToSend);
+
     public static void main(String[] args) throws IOException {
+        try {
+            int port = 12345;
+            Socket clientSocket = new Socket();
+            InetSocketAddress localhost = new InetSocketAddress("localhost", port);
 
-      /*  if(args.length != 2){
-            throw new IllegalArgumentException("c'est deux argument qu'il faut mettre!!");
+            /*connection serveur*/
+            clientSocket.connect(localhost);
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("entrez votre Identifiant: ");
+
+            /*Identification*/
+            String User = '@'+scanner.nextLine();
+            while (scanner.hasNextLine()) {
+            System.out.println("votre identifiant c'est: "+User);
+
+            /*envoyer message a publier*/
+
+            System.out.println("Entrez votre message: ");
+                String textScanner = "PUBLISH "+User+" "+scanner.nextLine() + "\n";
+                OutputStream outputStream = clientSocket.getOutputStream();
+                outputStream.write(textScanner.getBytes());
+            }
+            /*Ecouter le serveur*/
+
+
+
+
+            scanner.close();
+            clientSocket.close();
+        }catch(IOException e){
+            e.printStackTrace();
+
         }
-        else{
-            System.out.println("le clientTCP.py est en commentaire a la fin du ClientTCP.java");
-        }*/
-//        int port = Integer.parseInt(args[1]);
-        int port = 12345;
 
-        Socket clientSocket = new Socket();
-
-        InetSocketAddress localhost= new InetSocketAddress(args[0],port);
-        clientSocket.connect(localhost);
-        Scanner scanner= new Scanner(System.in);
-
-        while (scanner.hasNextLine()){
-            String  textScanner = scanner.nextLine()+"\n";
-            OutputStream outputStream = clientSocket.getOutputStream();
-            outputStream.write(textScanner.getBytes()); 
-        }
-
-        scanner.close();
-        clientSocket.close();
     }
 }
 
