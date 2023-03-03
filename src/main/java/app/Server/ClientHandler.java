@@ -1,7 +1,10 @@
 package app.Server;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class ClientHandler extends Thread {
     private final Socket clientSocket;
@@ -12,38 +15,37 @@ public class ClientHandler extends Thread {
 
     @Override
     public void run() {
-        StringBuilder acceptMessage= new StringBuilder();
+        String data;
         String textString;
-        textString = "";
+        String messageRecived;
 
         while (true) {
+            data = "";
+            String[] tableData;
+            textString = "";
 
             try {
                 InputStream inputStream = clientSocket.getInputStream();
                 char charReceive = (char) inputStream.read();
+
                 while (charReceive !=  '\n'){
-                    acceptMessage.append(charReceive);
+                    data += charReceive;
                     charReceive = (char) inputStream.read();
                 }
-                if(acceptMessage.toString().equals("PUBLISH")){
-                    System.out.println("PUBLISH,OK !!!!");
+                tableData= data.split(" ");
 
-                    while (true) {
-                        charReceive = (char) inputStream.read();
-                        if (charReceive == '\n') {
-                            System.out.println("messageToPublish>>: " + textString);
-                            break;
-                        } else {
-                            textString += charReceive;
-                        }
+                if(tableData[0].equals("PUBLISH")){
+                    System.out.println("PUBLISH,OK !!!!");
+                    System.out.println(tableData[1]);
+
+                    for(int index = 2;index<tableData.length;index++){
+                        textString += tableData[index] + " ";
                     }
+                    System.out.println("messageToPublish>>: " + textString);
 
                 }else{
-                    acceptMessage = new StringBuilder();
-                    textString = "";
-                    System.out.println("ERROR");
+                    System.out.println("ERROR NOT PUBLISH");
                 }
-
             }catch (Exception e) {
                 e.printStackTrace();
             }
