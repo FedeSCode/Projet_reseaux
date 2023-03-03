@@ -12,28 +12,39 @@ public class ClientHandler extends Thread {
 
     @Override
     public void run() {
-        String acceptMessage="";
-        String textString ="";
+        StringBuilder acceptMessage= new StringBuilder();
+        String textString;
+        textString = "";
 
         while (true) {
+
             try {
                 InputStream inputStream = clientSocket.getInputStream();
                 char charReceive = (char) inputStream.read();
-                System.out.println("PUBLISH?: ");
                 while (charReceive !=  '\n'){
-                    acceptMessage +=  charReceive;
+                    acceptMessage.append(charReceive);
                     charReceive = (char) inputStream.read();
                 }
-                if(acceptMessage.equals("PUBLISH")){
-                    System.out.println("ON A COMPRIS TON PUBLISH!!!!");
-                    textString += charReceive;
-                }
-                else{
-                    System.out.println("ERROR");
-                    System.out.println("> " + textString);
+                if(acceptMessage.toString().equals("PUBLISH")){
+                    System.out.println("PUBLISH,OK !!!!");
+
+                    while (true) {
+                        charReceive = (char) inputStream.read();
+                        if (charReceive == '\n') {
+                            System.out.println("messageToPublish>>: " + textString);
+                            break;
+                        } else {
+                            textString += charReceive;
+                        }
+                    }
+
+                }else{
+                    acceptMessage = new StringBuilder();
                     textString = "";
+                    System.out.println("ERROR");
                 }
-            } catch (Exception e) {
+
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }
