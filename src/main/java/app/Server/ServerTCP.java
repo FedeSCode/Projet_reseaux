@@ -33,18 +33,18 @@ public class ServerTCP {
         System.out.println(serverOn);
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
-            System.out.println("FakeBook started on port"+PORT);
+            System.out.println("FakeBook started on port >>"+" "+PORT);
             while (true) {
                 nbClient++;
                 Socket sc = serverSocket.accept();
                 //System.out.println("new client"+nbClient);
-                System.out.println("new client" + sc);
+                System.out.println("new client: " +"Port: "+sc.getPort());
                 ClientHandler handler = new ClientHandler(sc);
                 assert executorService != null;
                 executorService.submit(handler);
             }
         }catch (IOException e){
-            System.err.println("Error starting the server"+ e.getMessage());
+            System.err.println("Error starting the server,"+ e.getMessage());
         }
     }
 }
