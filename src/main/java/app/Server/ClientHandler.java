@@ -15,36 +15,41 @@ public class ClientHandler extends Thread {
 
     @Override
     public void run() {
-        String data;
-        String textString;
-        String messageRecived;
+        StringBuilder data;
+        StringBuilder textString;
+
 
         while (true) {
-            data = "";
+            data = new StringBuilder();
             String[] tableData;
-            textString = "";
+            textString = new StringBuilder();
+            String messageReceived="OK";
+            String messageNotReceived="ERROR";
 
             try {
                 InputStream inputStream = clientSocket.getInputStream();
+                OutputStream outputStream = clientSocket.getOutputStream();
+
                 char charReceive = (char) inputStream.read();
 
                 while (charReceive !=  '\n'){
-                    data += charReceive;
+                    data.append(charReceive);
                     charReceive = (char) inputStream.read();
                 }
-                tableData= data.split(" ");
+                tableData= data.toString().split(" ");
 
                 if(tableData[0].equals("PUBLISH")){
-                    System.out.println("PUBLISH,OK !!!!");
-                    System.out.println(tableData[1]);
-
+//                  System.out.println("PUBLISH,OK !!!!");
+                    System.out.println("user: "+ tableData[1]);
                     for(int index = 2;index<tableData.length;index++){
-                        textString += tableData[index] + " ";
+                        textString.append(tableData[index]).append(" ");
                     }
                     System.out.println("messageToPublish>>: " + textString);
 
+                    outputStream.write(messageReceived.getBytes());
                 }else{
                     System.out.println("ERROR NOT PUBLISH");
+                    outputStream.write(messageNotReceived.getBytes());
                 }
             }catch (Exception e) {
                 e.printStackTrace();

@@ -14,7 +14,6 @@ public class ServerTCP {
             throw new IllegalArgumentException("Mauvais nombre d'argument");
         }
         int port;
-        int nb = -1;
         ExecutorService executorService = null;
 
         if(args[0].equals("-v")){
@@ -22,21 +21,18 @@ public class ServerTCP {
             port = Integer.parseInt(args[1]);
             executorService = Executors.newWorkStealingPool();
         }else{
-            System.out.println("\n -t pool statique "+"\n -d pool dynamique"+"\n -v pool voleur");
+            System.out.println("-v pool voleur");
             port=12345;
         }
 
         ServerSocket serverSocket = new ServerSocket(port);
         while (true){
             nbClient++;
-
             Socket sc = serverSocket.accept();
-
             System.out.println("new client"+nbClient);
             app.Server.ClientHandler handler = new app.Server.ClientHandler(sc);
+            assert executorService != null;
             executorService.submit(handler);
-
-
         }
     }
 }
