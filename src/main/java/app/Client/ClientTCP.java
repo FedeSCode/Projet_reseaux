@@ -1,28 +1,27 @@
 package app.Client;
+
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class ClientTCP {
 
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         try {
-            String separator =          "--------------------------------------------------------------------------------------";
+            String separator = "--------------------------------------------------------------------------------------";
             String connectionToServer = "-----------------------------------Connected to Server--------------------------------";
             String fakeBook = "-----------------------------------FakeBook-------------------------------------------";
             String disconnectedFromServer = "------------------------------Disconnected From Server--------------------------------";
 
-
             int port = 12345;
             Socket clientSocket = new Socket();
             InetSocketAddress localhost = new InetSocketAddress("localhost", port);
-
-
 
             StringBuilder dataToSend = new StringBuilder();
 
@@ -31,46 +30,55 @@ public class ClientTCP {
             System.out.println(connectionToServer);
             TimeUnit.SECONDS.sleep(2);
             System.out.println(separator);
-            TimeUnit.SECONDS.sleep(1);
             System.out.println(fakeBook);
-            TimeUnit.SECONDS.sleep(1);
             System.out.println(separator);
 
             OutputStream outputStream = clientSocket.getOutputStream();
             InputStream receiveData = clientSocket.getInputStream();
 
-
             /*Identification*/
-            System.out.println("Enter your identification: ");
-            String User = '@'+scanner.next();
-
-            while (User.length()>=10)/*(User.length()>=65)*/{
-                System.out.println("ERROR IDENTIFIER TOO LONG");
-                System.out.println(separator);
-                System.out.println("Enter your identification: ");
-                User = '@'+scanner.next();
+            System.out.print("Enter your identification: ");
+            String user = scanner.nextLine();
+            while (user.length() > 10 || !user.startsWith("@")) {
+                System.out.println("ERROR: Invalid identifier. Please enter an identifier starting with @ " +
+                        "\n and with length less than or equal to 10.");
+                System.out.print("Enter your identification: ");
+                user = scanner.nextLine();
             }
 
+            System.out.println(separator);
+            System.out.println("Welcome, " + user.substring(1) + "!");
+            String userName = "USER" + user;
+            outputStream.write(userName.getBytes());
+
+
+
+            System.out.println("Type '$DISC' to disconnect from the server.");
+            System.out.println(separator);
+            System.out.println("Enter your message: ");
 
             while (scanner.hasNextLine()) {
+                /*ENTER DATA*/
+                String input = scanner.nextLine().trim();
+                while (input.equals("")){
+                    System.out.println("Enter a message min char 1 - max 256:");
+                    input = scanner.nextLine().trim();
+                }
 
-
-
-                dataToSend.append(scanner.nextLine());
                 /*Disconnect from server*/
-                if(dataToSend.toString().equals("$DISC")){
+                if (input.equals("$DISC")) {
                     break;
                 }
 
-                /*Verify length from data*/
-                while (dataToSend.length() >= 50)/*if (dataToSend.length() >= 256){*/{
-                    System.out.println("ERROR MESSAGE TO LONG");
-                    System.out.println("Enter your message les than 256 char: ");
-                    dataToSend.append(scanner.nextLine());
+                /*Verify length of message*/
+                while (input.length() > 10) {
+                    System.out.println("ERROR: Message too long. Please enter a message with length less than or equal to 256.");
+                    input = scanner.nextLine().trim();
                 }
 
+
                 /*Send message to publish*/
-                String messageToSend = "PUBLISH " + User + " " + dataToSend + "\n";
+                String messageToSend = "PUBLISH" + user + " " + input + "\n";
                 outputStream.write(messageToSend.getBytes());
 
                 /*Listening to server*/
@@ -83,28 +91,32 @@ public class ClientTCP {
 
                 String[] tableData = data.toString().split(" ");
 
-                for (String tableDatum : tableData) {
-                    if (Objects.equals(tableDatum, "FinResponse")) {
-                        System.out.println("Server >> " + tableData[0]);
+                StringBuilder response = new StringBuilder();
+                for (int index=0; index<tableData.length ; index++) {
+                    if ( tableData[index].equals("EndResponse")) {
+                        tableData = Arrays.copyOfRange(tableData, 0, index);
+
+                        for (String datum : tableData) {
+                            response.append(datum).append(' ');
+                        }
+                        System.out.println("ServerR >>: "+ response);
                         System.out.println(separator);
-                        System.out.println(separator);
-                        System.out.println("Your identification is: "+User);
                         System.out.println("Enter your message: ");
+                    } else if (tableData[0].equals("ERROR")) {
+                        System.out.println(separator);
+                            System.out.println("ERROR: " + data.substring(6));
+                            System.out.println("Enter your message: ");
                     }
                 }
-                dataToSend = new StringBuilder();
             }
 
+            System.out.println(separator);
             System.out.println(disconnectedFromServer);
             scanner.close();
             clientSocket.close();
 
-        }catch(IOException | InterruptedException e){
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 }
-
-
-
