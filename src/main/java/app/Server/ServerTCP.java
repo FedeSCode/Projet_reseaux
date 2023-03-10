@@ -8,35 +8,43 @@ import java.util.concurrent.Executors;
 
 
 public class ServerTCP {
+    private static final int PORT = 12345;
+
     public static void main(String[] args) throws IOException {
         String serverOn = "-----------------------------------Sever is on----------------------------------------";
+        String separator ="--------------------------------------------------------------------------------------";
 
         int nbClient = 0;
         if(args.length < 1 || args.length > 3){
             throw new IllegalArgumentException("Mauvais nombre d'argument");
         }
-        int port;
+        int PORT;
         ExecutorService executorService = null;
 
         if(args[0].equals("-v")){
 //            System.out.println("POOL VOLEUR");
-            port = Integer.parseInt(args[1]);
+            PORT = Integer.parseInt(args[1]);
             executorService = Executors.newWorkStealingPool();
         }else{
 //            System.out.println("-v pool voleur");
-            port=12345;
+            PORT=12345;
         }
 
         System.out.println(serverOn);
-        ServerSocket serverSocket = new ServerSocket(port);
-        while (true){
-            nbClient++;
-            Socket sc = serverSocket.accept();
-            //System.out.println("new client"+nbClient);
-            System.out.println("new client");
-            ClientHandler handler = new ClientHandler(sc);
-            assert executorService != null;
-            executorService.submit(handler);
+        try {
+            ServerSocket serverSocket = new ServerSocket(PORT);
+            System.out.println("FakeBook started on port"+PORT);
+            while (true) {
+                nbClient++;
+                Socket sc = serverSocket.accept();
+                //System.out.println("new client"+nbClient);
+                System.out.println("new client" + sc);
+                ClientHandler handler = new ClientHandler(sc);
+                assert executorService != null;
+                executorService.submit(handler);
+            }
+        }catch (IOException e){
+            System.err.println("Error starting the server"+ e.getMessage());
         }
     }
 }

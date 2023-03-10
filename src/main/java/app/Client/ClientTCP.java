@@ -4,16 +4,17 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class ClientTCP {
 
-    private static InputStream serverResponse;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         try {
             String separator =          "--------------------------------------------------------------------------------------";
             String connectionToServer = "-----------------------------------Connected to Server--------------------------------";
+            String fakeBook = "-----------------------------------FakeBook-------------------------------------------";
             String disconnectedFromServer = "------------------------------Disconnected From Server--------------------------------";
 
 
@@ -25,17 +26,21 @@ public class ClientTCP {
 
             StringBuilder dataToSend = new StringBuilder();
 
-
             /*connection server*/
             clientSocket.connect(localhost);
             System.out.println(connectionToServer);
+            TimeUnit.SECONDS.sleep(2);
+            System.out.println(separator);
+            TimeUnit.SECONDS.sleep(1);
+            System.out.println(fakeBook);
+            TimeUnit.SECONDS.sleep(1);
+            System.out.println(separator);
 
             OutputStream outputStream = clientSocket.getOutputStream();
             InputStream receiveData = clientSocket.getInputStream();
 
 
             /*Identification*/
-            System.out.println(separator);
             System.out.println("Enter your identification: ");
             String User = '@'+scanner.next();
 
@@ -49,9 +54,8 @@ public class ClientTCP {
 
             while (scanner.hasNextLine()) {
 
-                System.out.println(separator);
-                System.out.println("Your identification is: "+User);
-                System.out.println("Enter your message: ");
+
+
                 dataToSend.append(scanner.nextLine());
                 /*Disconnect from server*/
                 if(dataToSend.toString().equals("$DISC")){
@@ -82,6 +86,10 @@ public class ClientTCP {
                 for (String tableDatum : tableData) {
                     if (Objects.equals(tableDatum, "FinResponse")) {
                         System.out.println("Server >> " + tableData[0]);
+                        System.out.println(separator);
+                        System.out.println(separator);
+                        System.out.println("Your identification is: "+User);
+                        System.out.println("Enter your message: ");
                     }
                 }
                 dataToSend = new StringBuilder();
@@ -91,7 +99,7 @@ public class ClientTCP {
             scanner.close();
             clientSocket.close();
 
-        }catch(IOException e){
+        }catch(IOException | InterruptedException e){
             e.printStackTrace();
         }
 

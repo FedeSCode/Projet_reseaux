@@ -8,18 +8,18 @@ import java.nio.charset.StandardCharsets;
 public class Publisher {
     private String idUser;
     private String messageToSend;
-    private Socket clientSocket;
+
 
     public Publisher(Socket clientSocket) {
-        this.clientSocket = clientSocket;
+//        this.clientSocket = clientSocket;
 //        clientSocket.connect();
     }
 
     public void messageToSend(String user, String message) throws IOException {
         String publishMessage = "PUBLISH" + user + message;
-        OutputStream outputStream = clientSocket.getOutputStream();
+//        OutputStream outputStream = clientSocket.getOutputStream();
 
-        outputStream.write(publishMessage.getBytes(StandardCharsets.UTF_8));
+//        outputStream.write(publishMessage.getBytes(StandardCharsets.UTF_8));
 
     }
 
