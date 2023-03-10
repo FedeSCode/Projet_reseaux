@@ -1,5 +1,6 @@
 package app.Server;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -17,18 +18,37 @@ public class ClientHandler extends Thread {
     public void run() {
         StringBuilder data;
         StringBuilder textString;
+        String serverConnected = "Server_Is_Connected... FinResponse"+'\n';
+
+        OutputStream outputStream = null;
+        try {
+            outputStream = clientSocket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            outputStream.write(serverConnected.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         while (true) {
             data = new StringBuilder();
             String[] tableData;
             textString = new StringBuilder();
-            String messageReceived="OK";
-            String messageNotReceived="ERROR";
+            String messageReceived="OK FinResponse"+'\n';
+            String messageNotReceived="ERROR FinResponse"+'\n';
+            String messagePublishReceived="PUBLISH_OK FinResponse"+'\n';
+            String commandUnknown = "Command_Not_Recognize FinResponse"+'\n';
+            String serverDisconnect = "Server_Disconnected FinResponse"+'\n';
+
+
 
             try {
+
                 InputStream inputStream = clientSocket.getInputStream();
-                OutputStream outputStream = clientSocket.getOutputStream();
 
                 char charReceive = (char) inputStream.read();
 
@@ -38,19 +58,37 @@ public class ClientHandler extends Thread {
                 }
                 tableData= data.toString().split(" ");
 
+
                 if(tableData[0].equals("PUBLISH")){
-//                  System.out.println("PUBLISH,OK !!!!");
+                    System.out.println("OK Publish>>: ");
+                    //outputStream.write(messagePublishReceived.getBytes());
                     System.out.println("user: "+ tableData[1]);
+
                     for(int index = 2;index<tableData.length;index++){
                         textString.append(tableData[index]).append(" ");
                     }
-                    System.out.println("messageToPublish>>: " + textString);
 
-                    outputStream.write(messageReceived.getBytes());
+                    if(textString.toString().equals("")){
+                        System.out.println("ERROR NOTHING TO PUBLISH");
+                        outputStream.write(messageNotReceived.getBytes());
+
+                    }else{
+                        System.out.println("messageToPublish>>: " + textString);
+                        outputStream.write(messageReceived.getBytes());
+                    }
+
                 }else{
-                    System.out.println("ERROR NOT PUBLISH");
-                    outputStream.write(messageNotReceived.getBytes());
+                    System.out.println("Server disconnected");
+                    outputStream.write(serverDisconnect.getBytes());
+                    break;
                 }
+
+
+
+
+
+
+
             }catch (Exception e) {
                 e.printStackTrace();
             }

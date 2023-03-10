@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 
 public class ServerTCP {
     public static void main(String[] args) throws IOException {
+        String serverOn = "-----------------------------------Sever is on----------------------------------------";
+
         int nbClient = 0;
         if(args.length < 1 || args.length > 3){
             throw new IllegalArgumentException("Mauvais nombre d'argument");
@@ -17,20 +19,22 @@ public class ServerTCP {
         ExecutorService executorService = null;
 
         if(args[0].equals("-v")){
-            System.out.println("POOL VOLEUR");
+//            System.out.println("POOL VOLEUR");
             port = Integer.parseInt(args[1]);
             executorService = Executors.newWorkStealingPool();
         }else{
-            System.out.println("-v pool voleur");
+//            System.out.println("-v pool voleur");
             port=12345;
         }
 
+        System.out.println(serverOn);
         ServerSocket serverSocket = new ServerSocket(port);
         while (true){
             nbClient++;
             Socket sc = serverSocket.accept();
-            System.out.println("new client"+nbClient);
-            app.Server.ClientHandler handler = new app.Server.ClientHandler(sc);
+            //System.out.println("new client"+nbClient);
+            System.out.println("new client");
+            ClientHandler handler = new ClientHandler(sc);
             assert executorService != null;
             executorService.submit(handler);
         }
