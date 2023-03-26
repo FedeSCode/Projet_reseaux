@@ -1,15 +1,15 @@
-package app.Client;
+package app.Qesution3_1.Client;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-public class ClientTCP {
+public class ClientTCP_3 {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

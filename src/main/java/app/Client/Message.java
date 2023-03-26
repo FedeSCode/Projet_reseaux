@@ -1,12 +1,13 @@
 package app.Client;
 
 public class Message {
+    private static Long currentId = 0L;
     String message;
     User username;
     Long id;
 
-    public Message(String message, User username, Long id) {
-        this.id = id;
+    public Message(String message, User username) {
+        this.id = ++currentId;
         this.message = message;
         this.username = username;
     }
