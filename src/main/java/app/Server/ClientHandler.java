@@ -2,7 +2,9 @@ package app.Server;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,8 +22,12 @@ public class ClientHandler extends Thread {
         try {
             dataReceived = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             dataSend = new PrintWriter(clientSocket.getOutputStream(), true);
+            MessageDb messageDb = new MessageDb();
             String readLine;
             String userName = "";
+
+
+
             while ((readLine = dataReceived.readLine()) != null) {
                 String us="";
 
@@ -29,8 +35,8 @@ public class ClientHandler extends Thread {
                     StringBuilder text = new StringBuilder();
                     String[] tableData = us.split(" ");
                     String user = tableData[0];
-                    for (int i = 0; i < tableData.length; i++) {
-                        text.append(tableData[i]).append(' ');
+                    for (String tableDatum : tableData) {
+                        text.append(tableDatum).append(' ');
                     }
                     userName = readLine.substring(5);
                     System.out.println(">User::"+userName);
@@ -51,10 +57,21 @@ public class ClientHandler extends Thread {
                         }else {
                             User user = new User(userName);
                             Message newMessage = new Message(textMessage.toString(),user);
-
+                            /*
+                            //DataBase
+                            int value =messageDb.NewMessage(newMessage);
+                            if(value == 0){
+                                System.out.println("Failed to write message write in data base");
+                            }else{
+                                System.out.println("Message write in data base");
+                            }
+                            */
+                            /*Server response*/
                             ServerTCP.userToMessagesMap.get(new User(userName)).add(newMessage);
                             ServerTCP.messagesMap.put(newMessage.getId(),newMessage);
                             System.out.println("ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
+                            System.out.println("ServerTCP.userToMessagesMap: "+ServerTCP.messagesMap);
+
                             System.out.println(">>" + userName + " Publish: " + textMessage);
                             dataSend.println("Message Published with success!!");
                         }
@@ -97,7 +114,7 @@ public class ClientHandler extends Thread {
                             }
                         }
                         messagesList = newMessagesList;
-                        System.out.println(messagesList);
+                        System.out.println("since_id messagesList: "+messagesList);
                     }
 
                     if(tag != null){
@@ -108,34 +125,44 @@ public class ClientHandler extends Thread {
                             }
                         }
                         messagesList = newMessagesList;
-                        System.out.println(messagesList);
+                        System.out.println("tag messagesList: "+messagesList);
                     }
                     
                     messagesList.sort(Comparator.comparing(Message::getId).reversed());
-                    StringBuilder output = new StringBuilder("MSG_IDS\n");
+                    StringBuilder output = new StringBuilder("MSG_IDS $");
 
                     for(int index = 0; index < limit && index < messagesList.size() ; index++){
-                        output.append(messagesList.get(index).getId()).append("\n");
+                        output.append(messagesList.get(index).getId()).append("$");
                     }
-                    dataSend.println(output + "$");
+                    dataSend.println(output);
                     System.out.println(output);
                     
 
 
                 }
-                // @todo : apres le readLine.startsWith("RCV_MSG")
                 else if (readLine.startsWith("RCV_MSG")) {
-                    String message = readLine.substring(8);
-                    StringBuilder textMessage = new StringBuilder();
-                    String[] tableData = message.split(" ");
+                    String data = readLine.substring(8);
+                    String[] tableData = data.split(":");
+                    List<Message> messagesList = new ArrayList<>(ServerTCP.messagesMap.values());
+                    int msg_id = Integer.parseInt(tableData[1]);
+                    String response = null;
+                    if(msg_id != -1) {
+                         response = "user that publish: " +messagesList.get(msg_id).getUsername() +"$" +
+                                    "message: "+messagesList.get(msg_id).getMessage();
+                    }
 
+                    dataSend.println(response);
+                    System.out.println("End RCV_MSG");
                 }
+
+                // @todo : apres le readLine.startsWith("REPLY")
                 else if (readLine.startsWith("REPLY")) {
                     String message = readLine.substring(6);
                     StringBuilder textMessage = new StringBuilder();
-                    String[] tableData = message.split(" ");
+                    String[] tableData = message.split("");
 
                 }
+
                 else {
                     dataSend.println("BAD REQUEST!!");
                     dataSend.println("ERROR:" + readLine);
