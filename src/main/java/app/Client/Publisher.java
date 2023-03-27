@@ -13,83 +13,49 @@ public class Publisher {
     private String idUser;
     private String messageToSend;
     static int PORT = 12345;
-    public static void main(String[] args) throws IOException {
 
-
-        String hostName = InetAddress.getLocalHost().getHostName();
+    public static void publisher(BufferedReader userIn, BufferedReader serverResponse , PrintWriter out) {
 
         String separator = "--------------------------------------------------------------------------------------";
-        String connectionToServer = "-----------------------------------Connected to Server--------------------------------";
-        String fakeBook = "-----------------------------------FakeBook-------------------------------------------";
-        String disconnectedFromServer = "------------------------------Disconnected From Server--------------------------------";
+        System.out.println("Entrez un message a publier: \n");
 
+        try {
 
-        try
-            {
-                InetSocketAddress localhost = new InetSocketAddress("localhost", PORT);
-                Socket clientSocket = new Socket();
+            //wait for messages
+            String userInput;
+            userInput = userIn.readLine();
 
-                clientSocket.connect(localhost);
-
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader serverResponse = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
-
-                System.out.println(connectionToServer);
-                System.out.println(separator);
-                TimeUnit.SECONDS.sleep(2);
-                System.out.println(fakeBook);
-                System.out.println(separator);
-
-                // identifier
-                System.out.print("Enter your username user: ");
-                String username = userIn.readLine();
-                while (username.length() > 10 || !username.startsWith("@")) {
-                    System.out.println("ERROR: Invalid identifier. Please enter an identifier starting with @ " +
-                            "\n and with length less than or equal to 10.");
-                    System.out.print("Enter your identification: ");
-                    username = userIn.readLine();
-                }
-                System.out.println("Welcome, " + username.substring(1) + "!");
-                out.println("USER " +username);
-                String response = serverResponse.readLine();
-                System.out.println("Server response: " + response);
-                System.out.println(separator);
-                System.out.println("send a message:");
-
-
-                //wait for messages
-                String userInput;
-                while ((userInput = userIn.readLine()) != null) {
-                    while (userInput.equals("")){
-                        System.out.println("Enter a message min char 1 - max 256:");
-                        userInput = userIn.readLine();
-                    }
-
-                    /*Verify length of message*/
-                    while (userInput.length() > 50) {
-                        System.out.println("ERROR: Message too long. Please enter a message with length less than or equal to 256.");
-                        userInput = userIn.readLine();
-                    }
-
-                    out.println("PUBLISH " + username + " " + userInput);
-                    response = serverResponse.readLine();
-                    System.out.println("Server response: " + response);
-                    System.out.println(separator);
-
-                    if (userInput.equals("$DISC")) {
-                        clientSocket.close();
-                        System.out.println(disconnectedFromServer);
-                        break;
-                    }
-
-                }
-
-
-            } catch ( IOException | InterruptedException e) {
-                System.err.println("Couldn't get I/O for the connection to " + hostName);
-                System.exit(1);
+            while (userInput.equals("")) {
+                System.out.println("Enter a message min char 1 - max 256:");
+                userInput = userIn.readLine();
             }
+
+            /*Verify length of message*/
+            while (userInput.length() > 50) {
+                System.out.println("ERROR: Message too long. Please enter a message with length less than or equal to 256.");
+                userInput = userIn.readLine();
+            }
+
+//                    out.println("PUBLISH" + username + " " + userInput);
+            Request request = new Publish(Main.username, userInput);
+            System.out.println("send req: " + request.sendRequest());
+
+            out.println(request.sendRequest());
+            System.out.println("send"+(serverResponse));
+            String response = serverResponse.readLine();
+            System.out.println("Server response: " + response);
+            System.out.println(separator);
+
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
+
+
     }
+}
+
 

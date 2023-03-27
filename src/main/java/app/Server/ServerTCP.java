@@ -3,14 +3,18 @@ package app.Server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 public class ServerTCP {
     private static final int PORT = 12345;
+    static HashMap<Integer,Message> messagesMap = new HashMap<>();
+    static HashMap<User,List<Message>> userToMessagesMap = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
+
         String serverOn = "-----------------------------------Sever is on----------------------------------------";
         String separator ="--------------------------------------------------------------------------------------";
 
@@ -37,7 +41,6 @@ public class ServerTCP {
             while (true) {
                 nbClient++;
                 Socket sc = serverSocket.accept();
-                //System.out.println("new client"+nbClient);
                 System.out.println("new client: " +"Port: "+sc.getPort());
                 ClientHandler handler = new ClientHandler(sc);
                 assert executorService != null;
