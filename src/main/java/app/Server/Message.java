@@ -1,15 +1,17 @@
-package app.Client;
+package app.Server;
+
+import app.Server.User;
 
 public class Message {
-    private static Long currentId = 0L;
-    String message;
-    User username;
-    Long id;
+    private static int currentId = 0;
+    private final int id;
+    private User username;
+    private String message;
 
     public Message(String message, User username) {
         this.id = ++currentId;
         this.message = message;
-        this.username = username;
+        this.username = username;   
     }
 
     public String getMessage() {
@@ -28,11 +30,18 @@ public class Message {
         this.username = username;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+
+    public boolean contains(String tag){
+        return message.contains(tag);
     }
+
+    @Override
+    public String toString() {
+        return message;
+    }
+
 }
