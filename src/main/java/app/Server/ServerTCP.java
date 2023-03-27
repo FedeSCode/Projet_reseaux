@@ -12,11 +12,15 @@ public class ServerTCP {
     private static final int PORT = 12345;
     static HashMap<Integer,Message> messagesMap = new HashMap<>();
     static HashMap<User,List<Message>> userToMessagesMap = new HashMap<>();
-
+    static MessageDb messageDb = new MessageDb();
+    static UserDb userDb = new UserDb();
     public static void main(String[] args) throws IOException {
+
 
         String serverOn = "-----------------------------------Sever is on----------------------------------------";
         String separator ="--------------------------------------------------------------------------------------";
+        System.out.println("message_db: "+messageDb.getAllMessagesFromDb());
+        System.out.println("user_db: "+userDb.getAllUsersFromDb());
 
         int nbClient = 0;
         if(args.length < 1 || args.length > 3){

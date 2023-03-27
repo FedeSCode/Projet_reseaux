@@ -62,26 +62,26 @@ public class Main {
             if( userInput.equals("1")){
                 System.out.print("Ok, lets publish something!!");
                 Publisher.publisher(userIn,serverResponse,out);
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(1);
             }
             if( userInput.equals("2")){
                 System.out.print("Ok,let's find IDS!!");
                 Rcv_idser.rcv_idser(userIn,serverResponse,out);
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(1);
             }
             if( userInput.equals("3")){
-                System.out.println("3 Works");
-                TimeUnit.SECONDS.sleep(2);
-
+                System.out.print("Enter a msg ID:\n");
+                Rcv_msger.rcv_msger(userIn,serverResponse,out);
+                TimeUnit.SECONDS.sleep(1);
             }
             if( userInput.equals("4")){
                 System.out.println("4 Works");
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(1);
 
             }
             if( userInput.equals("5")){
                 System.out.println("5 Works");
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(1);
 
             }
 

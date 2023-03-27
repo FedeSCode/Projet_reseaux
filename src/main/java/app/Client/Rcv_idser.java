@@ -15,14 +15,13 @@ public class Rcv_idser {
 //            System.out.println("send req: " + request.sendRequest());
             out.println(request.sendRequest());
             String response;
-            do{
-                response = serverResponse.readLine();
-                if(response.equals("$")){
-                    response = "End response";
-                }
-                System.out.println("Server response: " + response);
-            }while(!(response.equals("End response")));
 
+            response = serverResponse.readLine();
+            String[] receivedData = response.split("\\$");
+            System.out.println("Server response:");
+            for (String s: receivedData) {
+                System.out.println(s);
+            }
             System.out.println(separator);
 
         } catch (Exception e) {
