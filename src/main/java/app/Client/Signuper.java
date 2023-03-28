@@ -10,7 +10,7 @@ public class Signuper {
     static String username;
     static boolean boolValue = false;
 
-    public static void signup_er(BufferedReader userIn, BufferedReader serverResponse , PrintWriter out) {
+    public static void signuper(BufferedReader userIn, BufferedReader serverResponse , PrintWriter out) {
 
         String separator = "--------------------------------------------------------------------------------------";
         String responseUserName="";

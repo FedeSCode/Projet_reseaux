@@ -24,8 +24,8 @@ public class Message {
         return username;
     }
 
-    public void setUsername(User username) {
-        this.username = username;
+    public String getStrUser(){
+        return  username.toString();
     }
 
     public int getId() {
