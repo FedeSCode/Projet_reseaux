@@ -7,9 +7,11 @@ import java.util.ArrayList;
 
 public class UserDb {
     Constants constants;
-    String sqlSelectAllUsers = "select * from user";
-    String sqlInsertUser = "INSERT INTO USERS "+"(id,userName) VALUES"+"(?,?);";
     User user;
+
+    String sqlSelectAllUsers = "select * from users";
+    String sqlInsertUser = "INSERT INTO USERS (username,password) VALUES(?,?)";
+
     String url= "jdbc:mysql://localhost:3306/project";
     String username= "root";
     String password= "toor";
@@ -22,8 +24,8 @@ public class UserDb {
         try (Connection connection = DriverManager.getConnection(url,username,password);
              PreparedStatement prepareStatement = connection.prepareStatement(sqlInsertUser)){
 
-            prepareStatement.setInt(1, user.getId());
             prepareStatement.setString(2,user.getUsername());
+//            prepareStatement.setString(3,user.getPassword());
             result = prepareStatement.executeUpdate();
 
         } catch ( SQLException e) {
@@ -41,7 +43,7 @@ public class UserDb {
 
             ResultSet resultSet = statement.executeQuery(sqlSelectAllUsers);
             while (resultSet.next()){
-                usersList.add(resultSet.getInt(1)+" | "+resultSet.getString(2));
+                usersList.add(resultSet.getInt(1)+" | "+resultSet.getString(2)+" | "+resultSet.getString(3));
             }
 
 

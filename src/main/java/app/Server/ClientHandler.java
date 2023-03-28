@@ -57,7 +57,7 @@ public class ClientHandler extends Thread {
                         }else {
                             User user = new User(userName);
                             Message newMessage = new Message(textMessage.toString(),user);
-                            /*
+
                             //DataBase
                             int value =messageDb.NewMessage(newMessage);
                             if(value == 0){
@@ -65,7 +65,7 @@ public class ClientHandler extends Thread {
                             }else{
                                 System.out.println("Message write in data base");
                             }
-                            */
+
                             /*Server response*/
                             ServerTCP.userToMessagesMap.get(new User(userName)).add(newMessage);
                             ServerTCP.messagesMap.put(newMessage.getId(),newMessage);
