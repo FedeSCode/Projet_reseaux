@@ -3,15 +3,24 @@ package app.Server;
 import java.util.Objects;
 
 public class User {
-    private static int currentId = 0;
     private String username;
-    private final int id;
+    private final String password;
+    private  int id;
 
-    public User(String username) {
-        this.id = ++currentId;
+    public User(String username, String password) {
         this.username = username;
+        this.password = password;
     }
 
+    public User(Integer currentId,String username) {
+        this.id = currentId++;
+        this.username = username;
+        password = "ok";
+    }
+
+
+
+    /*getter*/
     public int getId() {
         return id;
     }
@@ -20,10 +29,16 @@ public class User {
         return username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    /*setter*/
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /*methods*/
     @Override
     public boolean equals(Object o){
         if(o instanceof User)

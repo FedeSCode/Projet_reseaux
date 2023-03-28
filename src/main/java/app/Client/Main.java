@@ -1,23 +1,37 @@
 package app.Client;
 
 import app.ConstantsForApp.Constants;
+import app.Server.Login;
+import app.Server.MessageDb;
+import app.Server.UserDb;
+import javafx.scene.control.PasswordField;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+
+import static app.Client.Signuper.getUsername;
 
 public class Main {
     private static Scanner scanner;
     static int PORT = 12345;
     static String username;
 
+
     public static void main(String[] args) throws IOException, InterruptedException {
-        String separator = "--------------------------------------------------------------------------------------";
-        String connectionToServer = "-----------------------------------Connected to Server--------------------------------";
-        String fakeBook = "-----------------------------------FakeBook-------------------------------------------";
-        String disconnectedFromServer = "------------------------------Disconnected From Server--------------------------------";
+        String separator =             "--------------------------------------------------------------------------------------";
+        String connecting =              "----------------------------------------Connecting--------------------------------------";
+        String log_in =                 "---------------------------------------Login------------------------------------------";
+        String sing_up =                "---------------------------------------Sing-up----------------------------------------";
+        String connectionToServer =    "-----------------------------------Connected to Server--------------------------------";
+        String fakeBook =              "-----------------------------------FakeBook-------------------------------------------";
+        String disconnectedFromServer= "------------------------------Disconnected From Server--------------------------------";
+        MessageDb messageDb = new MessageDb();
+        UserDb userDb = new UserDb();
 
         scanner = new Scanner(System.in);
 
@@ -31,6 +45,7 @@ public class Main {
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         BufferedReader serverResponse = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+        Console console = System.console();
 
         System.out.println(connectionToServer);
         System.out.println(separator);
@@ -39,20 +54,72 @@ public class Main {
         System.out.println(separator);
 
 
-        // identifier
-        System.out.print("Enter your username user: ");
-        username = userIn.readLine();
-        while (username.length() > 10 || !username.startsWith("@")) {
-            System.out.println("ERROR: Invalid identifier. Please enter an identifier starting with @ " +
-                    "\n and with length less than or equal to 10.");
-            System.out.print("Enter your identification: ");
-            username = userIn.readLine();
+        boolean isAuth = false;
+        while(!isAuth){
+            System.out.println("1.Login \n2.Sing-up");
+            String home = userIn.readLine();
+            String password = null;
+            String checkPassword = null;
+            Login login = new Login(username,password,checkPassword);
+
+            if(home.equals("1")){
+                System.out.println(log_in);
+                System.out.print("Enter your username user: ");
+                username = userIn.readLine();
+                while (username.length() > 10 || !username.startsWith("@")) {
+                    System.out.println("ERROR: Invalid identifier. Please enter an identifier starting with @ " +
+                            "\n and with length less than or equal to 10.");
+                    System.out.print("Enter your identification: ");
+                    username = userIn.readLine();
+                }
+
+                if(username.equals(userDb.getUsername(username))) {
+                    System.out.print("Enter your password: ");
+                    checkPassword = userDb.getPasswordByUsername(username);
+                    password = userIn.readLine();
+                    while (password.length() > 10) {
+                        System.out.println("ERROR: Invalid password, please enter your password");
+                        System.out.print("Enter your identification: ");
+                        password = userIn.readLine();
+                    }
+                    System.out.println(connecting);
+
+                    isAuth = login.isAuth(username, password, checkPassword);
+                    if (!isAuth){
+                        System.out.println("Username or password not valid");
+                    }
+
+                    TimeUnit.SECONDS.sleep(2);
+                }else{
+                    System.out.println("User not Found\n" +
+                            "-------->2.to Sing-up");
+                }
+            }
+            else if (home.equals("2")){
+                System.out.println(sing_up);
+                Signuper.signup_er(userIn,serverResponse,out);
+                checkPassword = userDb.getPasswordByUsername(Signuper.getUsername());
+                System.out.println("test sing checkPassword: "+ Signuper.getUsername());
+                username=Signuper.getUsername();
+                System.out.println("test sing auth: "+ Signuper.getIsAuth());
+                isAuth = Signuper.getIsAuth();
+            }
+            else{
+                    System.out.println("try again");
+            }
+
+
+
         }
+
+
         System.out.println("Welcome, " + username.substring(1) + "!");
         out.println("USER " + username);
         String response = serverResponse.readLine();
         System.out.println("Server response: " + response);
         System.out.println(separator);
+
+
 //        System.out.println("send a message:");
 
         String userInput;
@@ -110,11 +177,6 @@ public class Main {
             menu();
 
         }
-
-
-
-
-
 
     }
 

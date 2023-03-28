@@ -1,17 +1,15 @@
 package app.Server;
-
 import app.Server.User;
 
 public class Message {
-    private static int currentId = 0;
     private final int id;
     private User username;
     private String message;
 
-    public Message(String message, User username) {
-        this.id = ++currentId;
+    public Message(Integer currentId,String message, User username) {
+        this.id = currentId;
         this.message = message;
-        this.username = username;   
+        this.username = username;
     }
 
     public String getMessage() {

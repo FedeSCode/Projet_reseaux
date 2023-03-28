@@ -19,9 +19,11 @@ public class ServerTCP {
 
         String serverOn = "-----------------------------------Sever is on----------------------------------------";
         String separator ="--------------------------------------------------------------------------------------";
-        System.out.println("message_db: "+messageDb.getAllMessagesFromDb());
-        System.out.println("user_db: "+userDb.getAllUsersFromDb());
 
+        /*loading Db*/
+        LoadFromDb();
+
+        /*Server*/
         int nbClient = 0;
         if(args.length < 1 || args.length > 3){
             throw new IllegalArgumentException("Mauvais nombre d'argument");
@@ -30,11 +32,9 @@ public class ServerTCP {
         ExecutorService executorService = null;
 
         if(args[0].equals("-v")){
-//            System.out.println("POOL VOLEUR");
             PORT = Integer.parseInt(args[1]);
             executorService = Executors.newWorkStealingPool();
         }else{
-//            System.out.println("-v pool voleur");
             PORT=12345;
         }
 
@@ -53,5 +53,37 @@ public class ServerTCP {
         }catch (IOException e){
             System.err.println("Error starting the server,"+ e.getMessage());
         }
+    }
+
+
+    public static void LoadFromDb(){
+        /*base des donnes*/
+        ArrayList<String> currentMessagesOnDb;
+        ArrayList<String> currentUsersOnDb;
+
+        /*Users on Db*/
+        currentUsersOnDb = userDb.getAllUsersFromDb();
+        currentMessagesOnDb = messageDb.getAllMessagesFromDb();
+
+        for (String userOnDb:currentUsersOnDb) {
+            String[] dataUser = userOnDb.split("\\|");
+            userToMessagesMap.put(new User(userDb.getLastUserId(),dataUser[1]),new ArrayList<>());
+            System.out.println("---userToMessagesMap:  "+userToMessagesMap);
+
+            for (String messageOnDb:currentMessagesOnDb) {
+
+                String[] dataMessage = messageOnDb.split("\\|");
+                if (dataUser[1].equals(dataMessage[2])) {
+                    User user = new User(Integer.parseInt(dataUser[0]), dataUser[1]);
+                    Message newMessage = new Message(Integer.parseInt(dataMessage[0]), dataMessage[3], user);
+                    messagesMap.put(newMessage.getId(),newMessage);
+                    userToMessagesMap.get(new User(userDb.getLastUserId(),dataUser[1])).add(newMessage);
+                }
+
+
+            }
+        }
+        System.out.println(">>>>ServerTCP.userToMessagesMap: "+userToMessagesMap);
+        System.out.println(">>>>ServerTCP.messagesMap: "+messagesMap);
     }
 }
