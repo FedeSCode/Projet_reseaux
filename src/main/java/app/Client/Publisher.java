@@ -10,9 +10,6 @@ import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 public class Publisher {
-    private String idUser;
-    private String messageToSend;
-    static int PORT = 12345;
 
     public static void publisher(BufferedReader userIn, BufferedReader serverResponse , PrintWriter out) {
 

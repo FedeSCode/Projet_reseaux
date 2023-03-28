@@ -60,21 +60,14 @@ public class ClientHandler extends Thread {
                                 dataSend.println("ERROR: Message not publish");
                             }else{
                                 /*Server response*/
+                                ServerTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),userName)).add(newMessage);
+                                ServerTCP.messagesMap.put(newMessage.getId(),newMessage);
                                 System.out.println(">>>>ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
                                 System.out.println(">>>>ServerTCP.messagesMap: "+ServerTCP.messagesMap);
                                 System.out.println("Message write in data base");
                                 System.out.println(">>" + userName + " Publish: " + textMessage);
                                 dataSend.println("Message Published with success!!");
                             }
-                             /*
-                            //Server response//
-                            ServerTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),userName)).add(newMessage);
-                            ServerTCP.messagesMap.put(newMessage.getId(),newMessage);
-                            System.out.println(">>>>ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
-                            System.out.println(">>>>ServerTCP.messagesMap: "+ServerTCP.messagesMap);
-
-                            System.out.println(">>" + userName + " Publish: " + textMessage);
-                            dataSend.println("Message Published with success!!");*/
                         }
                     }
                 }
@@ -159,9 +152,44 @@ public class ClientHandler extends Thread {
 
                 // @todo : apres le readLine.startsWith("REPLY")
                 else if (readLine.startsWith("REPLY")) {
-                    String message = readLine.substring(6);
-                    StringBuilder textMessage = new StringBuilder();
-                    String[] tableData = message.split("");
+                    String data = readLine.substring(6);
+                    String[] tableData = data.split(" ");
+                    StringBuilder message = new StringBuilder();
+                    for (int i = 3; i < tableData.length;i++){
+                         message.append(tableData[i]).append(" ");
+                    }
+                    System.out.println("author: "+tableData[1]+" replay to: "+message);
+
+                }
+                else if(readLine.startsWith("FOLLOW")){
+                    String data = readLine.substring(7);
+                    String[] authors = data.split(" ");
+                    StringBuilder response = new StringBuilder();
+                    System.out.println("here FOLLOW: "+authors[0]);
+                    for (String author : authors) {
+                        if (author != null) {
+                            List<Message> messages = new ArrayList<>();
+                            for (Message message : ServerTCP.messagesMap.values()) {
+                                System.out.println("here 123");
+                                if (message.getStrUser().equals(author)) {
+                                    messages.add(message);
+                                }
+                            }
+                            response.append(author).append("___");
+                            System.out.println("author" + author);
+                            for (Message message : messages) {
+                                response.append(message.getMessage()).append("___").append(message.getId()).append("___");
+                                System.out.println("message: " + message.getMessage()+"id: "+message.getId());
+                            }
+                            response.append("___");
+                        }
+                    }
+                    dataSend.println(response);
+                    System.out.println("sallliii");
+
+
+
+
 
                 }
                 else if(readLine.startsWith("NewUser")){
@@ -180,7 +208,6 @@ public class ClientHandler extends Thread {
                             dataSend.println("User not created");
                         }
                         System.out.println("new user created");
-                        System.out.println("table users not update");
                         dataSend.println("User created : "+user);
 
                     }

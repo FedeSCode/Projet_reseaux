@@ -1,20 +1,14 @@
 package app.Client;
 
-import app.ConstantsForApp.Constants;
 import app.Server.Login;
 import app.Server.MessageDb;
 import app.Server.UserDb;
-import javafx.scene.control.PasswordField;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.net.PasswordAuthentication;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-
-import static app.Client.Signuper.getUsername;
 
 public class Main {
     private static Scanner scanner;
@@ -97,7 +91,7 @@ public class Main {
             }
             else if (home.equals("2")){
                 System.out.println(sing_up);
-                Signuper.signup_er(userIn,serverResponse,out);
+                Signuper.signuper(userIn,serverResponse,out);
                 checkPassword = userDb.getPasswordByUsername(Signuper.getUsername());
                 System.out.println("test sing checkPassword: "+ Signuper.getUsername());
                 username=Signuper.getUsername();
@@ -142,7 +136,8 @@ public class Main {
                 TimeUnit.SECONDS.sleep(1);
             }
             if( userInput.equals("4")){
-                System.out.println("4 Works");
+                System.out.println("Ok let's replay:");
+                Replayer.replayer(userIn,serverResponse,out);
                 TimeUnit.SECONDS.sleep(1);
 
             }

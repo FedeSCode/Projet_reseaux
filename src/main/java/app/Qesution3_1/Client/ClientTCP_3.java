@@ -59,7 +59,6 @@ public class ClientTCP_3 {
 
             while (scanner.hasNextLine()) {
 
-
                 /*ENTER DATA*/
                 String input = scanner.nextLine().trim();
                 while (input.equals("")){
