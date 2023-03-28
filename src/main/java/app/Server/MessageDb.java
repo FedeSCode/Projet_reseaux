@@ -12,6 +12,7 @@ public class MessageDb {
     Message message;
     String sqlSelectAllMessages = "select * from messages";
     String sqlInsertMessage = "INSERT INTO messages (usernameID, username, message) SELECT id, ?, ? FROM users WHERE username = ?;";
+    String sqlSelectIdOfLastMessage = "SELECT max(id) from messages;";
     String url= "jdbc:mysql://localhost:3306/project";
     String username= "root";
     String password= "toor";
@@ -43,8 +44,8 @@ public class MessageDb {
 
             ResultSet resultSet = statement.executeQuery(sqlSelectAllMessages);
             while (resultSet.next()){
-                messagesList.add( resultSet.getInt(1)+" | "+resultSet.getInt(2)+" | "+
-                        resultSet.getString(3)+" | "+resultSet.getString(4));
+                messagesList.add( resultSet.getInt(1)+"|"+resultSet.getInt(2)+"|"+
+                        resultSet.getString(3)+"|"+resultSet.getString(4));
             }
 
 
@@ -52,6 +53,21 @@ public class MessageDb {
             System.out.println(e);
         }
         return messagesList;
+    }
+
+    public int getLastMessageId(){
+        int idOfLastMessage = 0;
+        try (Connection connection = DriverManager.getConnection(url,username,password);){
+
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlSelectIdOfLastMessage);
+            while(resultSet.next()){
+                idOfLastMessage = resultSet.getInt(1);
+            }
+        } catch ( SQLException e) {
+            System.out.println(e);
+        }
+        return idOfLastMessage;
     }
 
 

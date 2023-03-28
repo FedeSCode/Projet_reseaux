@@ -19,29 +19,23 @@ public class ClientHandler extends Thread {
 
     @Override
     public void run() {
+
         try {
             dataReceived = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             dataSend = new PrintWriter(clientSocket.getOutputStream(), true);
             MessageDb messageDb = new MessageDb();
+            UserDb userDb = new UserDb();
+
             String readLine;
             String userName = "";
-
-
-
             while ((readLine = dataReceived.readLine()) != null) {
-                String us="";
+
 
                 if(readLine.startsWith("USER")){
-                    StringBuilder text = new StringBuilder();
-                    String[] tableData = us.split(" ");
-                    String user = tableData[0];
-                    for (String tableDatum : tableData) {
-                        text.append(tableDatum).append(' ');
-                    }
                     userName = readLine.substring(5);
                     System.out.println(">User::"+userName);
                     dataSend.println("User ok "+"-"+userName);
-                    ServerTCP.userToMessagesMap.put(new User(userName),new ArrayList<>());
+//                    ServerTCP.userToMessagesMap.put(new User(userDb.getLastUserId(),userName),new ArrayList<>());
                 }
                 else if (readLine.startsWith("PUBLISH")) {
                     String message = readLine.substring(8);
@@ -55,25 +49,32 @@ public class ClientHandler extends Thread {
                         if(textMessage.toString().equals("")){
                             dataSend.println("Nothing to publish" );
                         }else {
-                            User user = new User(userName);
-                            Message newMessage = new Message(textMessage.toString(),user);
+                            User user = new User(userDb.getLastUserId(),userName);
+                            Message newMessage = new Message(messageDb.getLastMessageId(),textMessage.toString(),user);
 
                             //DataBase
                             int value =messageDb.NewMessage(newMessage);
                             if(value == 0){
+                                /*Server response*/
                                 System.out.println("Failed to write message write in data base");
+                                dataSend.println("ERROR: Message not publish");
                             }else{
+                                /*Server response*/
+                                System.out.println(">>>>ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
+                                System.out.println(">>>>ServerTCP.messagesMap: "+ServerTCP.messagesMap);
                                 System.out.println("Message write in data base");
+                                System.out.println(">>" + userName + " Publish: " + textMessage);
+                                dataSend.println("Message Published with success!!");
                             }
-
-                            /*Server response*/
-                            ServerTCP.userToMessagesMap.get(new User(userName)).add(newMessage);
+                             /*
+                            //Server response//
+                            ServerTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),userName)).add(newMessage);
                             ServerTCP.messagesMap.put(newMessage.getId(),newMessage);
-                            System.out.println("ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
-                            System.out.println("ServerTCP.userToMessagesMap: "+ServerTCP.messagesMap);
+                            System.out.println(">>>>ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
+                            System.out.println(">>>>ServerTCP.messagesMap: "+ServerTCP.messagesMap);
 
                             System.out.println(">>" + userName + " Publish: " + textMessage);
-                            dataSend.println("Message Published with success!!");
+                            dataSend.println("Message Published with success!!");*/
                         }
                     }
                 }
@@ -96,7 +97,7 @@ public class ClientHandler extends Thread {
                         System.out.println("list being filtered...");
                     }
                     if (author != null){
-                        messagesList = ServerTCP.userToMessagesMap.get(new User(author));
+                        messagesList = ServerTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),author));
                         if(messagesList == null){
                             messagesList = new ArrayList<>();
                         }
@@ -134,6 +135,7 @@ public class ClientHandler extends Thread {
                     for(int index = 0; index < limit && index < messagesList.size() ; index++){
                         output.append(messagesList.get(index).getId()).append("$");
                     }
+
                     dataSend.println(output);
                     System.out.println(output);
                     
@@ -162,7 +164,27 @@ public class ClientHandler extends Thread {
                     String[] tableData = message.split("");
 
                 }
+                else if(readLine.startsWith("NewUser")){
+                    String data = readLine.substring(8);
+                    String[] tableData = data.split(" ");
+                    String user = tableData[0];
+                    String password = tableData[1];
+                    System.out.println("test user: "+user+" \ntest password: " +password);
+                    System.out.println("(test): "+user.equals(userDb.getUsername(user)));
+                    if(!user.equals(userDb.getUsername(user))){
+                        User newUser = new User(user,password);
+                        //DataBase
+                        int valueResponse = userDb.createUser(newUser);
+                        if (valueResponse == 0){
+                            System.out.println("ERROR: table users not update");
+                            dataSend.println("User not created");
+                        }
+                        System.out.println("new user created");
+                        System.out.println("table users not update");
+                        dataSend.println("User created : "+user);
 
+                    }
+                }
                 else {
                     dataSend.println("BAD REQUEST!!");
                     dataSend.println("ERROR:" + readLine);
