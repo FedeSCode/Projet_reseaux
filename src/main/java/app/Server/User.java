@@ -4,8 +4,12 @@ import java.util.Objects;
 
 public class User {
     private String username;
-    private final String password;
-    private  int id;
+    private String password;
+    private int id;
+
+    public User(String username) {
+        this.username = username;
+    }
 
     public User(String username, String password) {
         this.username = username;
@@ -39,6 +43,8 @@ public class User {
     }
 
     /*methods*/
+
+
     @Override
     public boolean equals(Object o){
         if(o instanceof User)

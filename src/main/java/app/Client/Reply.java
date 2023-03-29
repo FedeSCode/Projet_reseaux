@@ -10,9 +10,8 @@ public class Reply extends Request{
         super.message = message;
 
     }
-
     @Override
     String entete() {
-        return "REPLY"+" "+"author:"+" "+username+"reply_to_id:"+" "+idMessage;
+        return "REPLY"+" "+"author:"+" "+username+" "+"reply_to_id:"+" "+idMessage;
     }
 }

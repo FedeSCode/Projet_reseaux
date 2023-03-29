@@ -50,7 +50,7 @@ public class Main {
 
         boolean isAuth = false;
         while(!isAuth){
-            System.out.println("1.Login \n2.Sing-up");
+            System.out.println("1.Login \n2.Sign-up");
             String home = userIn.readLine();
             String password = null;
             String checkPassword = null;
@@ -108,9 +108,7 @@ public class Main {
 
 
         System.out.println("Welcome, " + username.substring(1) + "!");
-        out.println("USER " + username);
-        String response = serverResponse.readLine();
-        System.out.println("Server response: " + response);
+        Connecter.connecter(userIn,serverResponse,out);
         System.out.println(separator);
 
 
@@ -120,6 +118,24 @@ public class Main {
         menu();
         while ((userInput = userIn.readLine()) != null){
             System.out.println(separator);
+            if (userInput.equals("0")) {
+//                $DISC
+                System.out.println("are u sure??");
+                System.out.println("-yes -no");
+                userInput = userIn.readLine();
+                while(!userInput.toLowerCase().contains("yes") && !userInput.toLowerCase().contains("no") ){
+                    System.out.println("-yes -no");
+                    userInput = userIn.readLine();
+                }
+                if(userInput.toLowerCase().contains("yes")){
+                    clientSocket.close();
+                    System.out.println(disconnectedFromServer);
+                    break;
+                }
+                else if(userInput.toLowerCase().contains("no")){
+                    System.out.println("OK.");
+                }
+            }
             if( userInput.equals("1")){
                 System.out.print("Ok, lets publish something!!");
                 Publisher.publisher(userIn,serverResponse,out);
@@ -139,34 +155,24 @@ public class Main {
                 System.out.println("Ok let's replay:");
                 Replayer.replayer(userIn,serverResponse,out);
                 TimeUnit.SECONDS.sleep(1);
-
             }
             if( userInput.equals("5")){
-                System.out.println("5 Works");
+                System.out.println("What message you want to republish");
+                Republisher.republish(userIn,serverResponse,out);
                 TimeUnit.SECONDS.sleep(1);
-
             }
-
-            if (userInput.equals("6")) {
-//                $DISC
-                System.out.println("are u sure??");
-                System.out.println("-yes -no");
-                userInput = userIn.readLine();
-
-                while(!userInput.toLowerCase().contains("yes") && !userInput.toLowerCase().contains("no") ){
-                    System.out.println("-yes -no");
-                    userInput = userIn.readLine();
-                }
-
-                if(userInput.toLowerCase().contains("yes")){
-                    clientSocket.close();
-                    System.out.println(disconnectedFromServer);
-                    break;
-                }
-                else if(userInput.toLowerCase().contains("no")){
-                    System.out.println("OK.");
-                }
-
+            if( userInput.equals("6")){
+                System.out.println("Ok let's follow:");
+                FollowerRequest.followerRequest(userIn,serverResponse,out);
+                TimeUnit.SECONDS.sleep(1);
+            }if( userInput.equals("7")){
+                System.out.println("Ok let's follow:");
+                Subscriber.subscriber(userIn,serverResponse,out);
+                TimeUnit.SECONDS.sleep(1);
+            }if( userInput.equals("8")){
+                System.out.println("Ok let's unfollow:");
+                Unsubscriber.unSubscriber(userIn,serverResponse,out);
+                TimeUnit.SECONDS.sleep(1);
             }
 
             menu();
@@ -177,12 +183,15 @@ public class Main {
 
     private static void menu(){
         System.out.println("what u want to do today "+username+"??");
+        System.out.println("0. To disconnect from server");
         System.out.println("1. Publish a message");
         System.out.println("2. RCV_IDS");
         System.out.println("3. RCV_MSG");
         System.out.println("4. REPLY");
         System.out.println("5. REPUBLISH");
-        System.out.println("6. To disconnect from server");
+        System.out.println("6. FOLLOWER");
+        System.out.println("7. SUBSCRIBE");
+        System.out.println("8. UNSUBSCRIBE");
         System.out.println("Chose what u want to do: ");
 
     }

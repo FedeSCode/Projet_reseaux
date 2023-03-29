@@ -20,10 +20,7 @@ public class Follower {
         String disconnectedFromServer = "------------------------------Disconnected From Server--------------------------------";
         String hostName = InetAddress.getLocalHost().getHostName();
         try {
-    //            if(args.length < 1 || args.length > 3){
-    //                throw new IllegalArgumentException("Mauvais nombre d'argument");
-    //            }
-
+                //@fixme
                 InetSocketAddress localhost = new InetSocketAddress("localhost", PORT);
                 Socket clientSocket = new Socket();
                 /*connection to the socket*/
@@ -40,7 +37,6 @@ public class Follower {
                 System.out.println(separator);
 
                 //codeeee
-
                 Scanner scanner = new Scanner(System.in);
 
                 System.out.println("Enter the username(s) you want to follow (separated by a space): ");

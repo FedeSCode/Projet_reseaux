@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,6 +15,10 @@ public class ServerTCP {
     static HashMap<User,List<Message>> userToMessagesMap = new HashMap<>();
     static MessageDb messageDb = new MessageDb();
     static UserDb userDb = new UserDb();
+    static HashMap<User,List<User>> clientFollowers = new HashMap<>();
+    static HashMap<Tag,List<User>> followersTags = new HashMap<>();
+    static HashMap<User,Queue<Message>> userQueue = new HashMap<>();
+
     public static void main(String[] args) throws IOException {
 
 
@@ -25,18 +30,17 @@ public class ServerTCP {
 
         /*Server*/
         int nbClient = 0;
-        if(args.length < 1 || args.length > 3){
-            throw new IllegalArgumentException("Mauvais nombre d'argument");
-        }
+
         int PORT;
         ExecutorService executorService = null;
 
-        if(args[0].equals("-v")){
+        if(args.length == 2){
             PORT = Integer.parseInt(args[1]);
-            executorService = Executors.newWorkStealingPool();
         }else{
             PORT=12345;
         }
+
+        executorService = Executors.newWorkStealingPool();
 
         System.out.println(serverOn);
         try {
@@ -68,6 +72,8 @@ public class ServerTCP {
         for (String userOnDb:currentUsersOnDb) {
             String[] dataUser = userOnDb.split("\\|");
             userToMessagesMap.put(new User(userDb.getLastUserId(),dataUser[1]),new ArrayList<>());
+            clientFollowers.put(new User(userDb.getLastUserId(),dataUser[1]),new ArrayList<>());
+            userQueue.put(new User(userDb.getLastUserId(),dataUser[1]),new ConcurrentLinkedQueue<>());
             System.out.println("---userToMessagesMap:  "+userToMessagesMap);
 
             for (String messageOnDb:currentMessagesOnDb) {

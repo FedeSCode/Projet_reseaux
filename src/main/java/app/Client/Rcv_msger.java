@@ -26,9 +26,7 @@ public class Rcv_msger {
                 userInput = userIn.readLine();
             }
 
-                    int var = Integer.parseInt(userInput) -1 ;
-
-
+                    int var = Integer.parseInt(userInput);
 
 //            Request request = new Rcv_msg(userInput);
             Request request = new Rcv_msg(String.valueOf(var));
