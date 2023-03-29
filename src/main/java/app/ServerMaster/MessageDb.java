@@ -1,11 +1,9 @@
-package app.Server;
+package app.ServerMaster;
 
 import app.ConstantsForApp.Constants;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class MessageDb {
     Constants constants;

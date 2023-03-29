@@ -1,4 +1,4 @@
-package app.Server;
+package app.ServerMaster;
 
 public class Login {
 

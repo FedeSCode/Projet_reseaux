@@ -1,7 +1,5 @@
 package app.Client;
 
-import app.Server.Message;
-
 public class Publish extends Request{
     String username;
 

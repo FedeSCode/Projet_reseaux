@@ -1,4 +1,4 @@
-package app.Server;
+package app.ServerMaster;
 
 import java.io.*;
 import java.net.Socket;
@@ -62,17 +62,17 @@ public class ClientHandler extends Thread {
                             //DataBase
                             int value =messageDb.NewMessage(newMessage);
                             if(value == 0){
-                                System.out.println("aaaaaa:"+tableData[0]);
+
                                 /*Server response*/
                                 System.out.println("Failed to write message write in data base");
                                 dataSend.println("ERROR: Message not publish");
                             }else{
                                 /*Server response*/
-                                ServerTCP.userToMessagesMap.get(userName).add(newMessage);
-                                ServerTCP.messagesMap.put(newMessage.getId(),newMessage);
+                                ServerMasterTCP.userToMessagesMap.get(userName).add(newMessage);
+                                ServerMasterTCP.messagesMap.put(newMessage.getId(),newMessage);
                                 addToQueue(newMessage,userName);
-                                System.out.println(">>>>ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
-                                System.out.println(">>>>ServerTCP.messagesMap: "+ServerTCP.messagesMap);
+                                System.out.println(">>>>ServerTCP.userToMessagesMap: "+ ServerMasterTCP.userToMessagesMap);
+                                System.out.println(">>>>ServerTCP.messagesMap: "+ ServerMasterTCP.messagesMap);
                                 System.out.println("Message write in data base");
                                 System.out.println(">>" + userName + " Publish: " + textMessage);
                                 dataSend.println("Message Published with success!!");
@@ -103,13 +103,13 @@ public class ClientHandler extends Thread {
                         System.out.println("list being filtered...");
                     }
                     if (author != null){
-                        messagesList = ServerTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),author));
+                        messagesList = ServerMasterTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),author));
                         if(messagesList == null){
                             messagesList = new ArrayList<>();
                         }
 
                     }else{
-                        messagesList = new ArrayList<>(ServerTCP.messagesMap.values());
+                        messagesList = new ArrayList<>(ServerMasterTCP.messagesMap.values());
                     }
                     System.out.println(messagesList);
 
@@ -154,7 +154,7 @@ public class ClientHandler extends Thread {
                     String response;
 
                     if(msg_id != -1) {
-                        Message message = ServerTCP.messagesMap.get(msg_id);
+                        Message message = ServerMasterTCP.messagesMap.get(msg_id);
                          response = "user that publish: " +message.getUsername() +"$" +
                                     "message: "+message.getMessage();
 
@@ -176,7 +176,7 @@ public class ClientHandler extends Thread {
 
                 }
 
-                // @fixme : apres le readLine.startsWith("REPLY")
+                // @done
                 else if (readLine.startsWith("REPLY")) {
                     String data = readLine.substring(6);
                     String[] tableData = data.split(" ");
@@ -192,22 +192,22 @@ public class ClientHandler extends Thread {
                     System.out.println("ici>>>>>>>>>>>>>>>>>:author: "+author+" message Id: "+msg_id);
                     if(msg_id != -1) {
                         response ="user that reply"+"$"+author+"$"+
-                                "user that publish:"+"$"+ServerTCP.messagesMap.get(msg_id).getUsername() +"$"+
-                                "message origin:"+"$"+ServerTCP.messagesMap.get(msg_id).getMessage()+
+                                "user that publish:"+"$"+ ServerMasterTCP.messagesMap.get(msg_id).getUsername() +"$"+
+                                "message origin:"+"$"+ ServerMasterTCP.messagesMap.get(msg_id).getMessage()+
                                 "response:"+"$"+message+"$"+
-                                "id relpy:"+"$"+msg_id+"$"+"OK";
+                                "id reply:"+"$"+msg_id+"$"+"OK";
                         User user = new User(userDb.getLastUserId(),author);
                         Message newMessage = new Message(messageDb.getLastMessageId(),message.toString(),user,msg_id);
                         //DataBase
                         int value =messageDb.NewMessage(newMessage);
                         if(value == 1){
-                            ServerTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),author)).add(newMessage);
-                            ServerTCP.messagesMap.put(newMessage.getId(),newMessage);
+                            ServerMasterTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),author)).add(newMessage);
+                            ServerMasterTCP.messagesMap.put(newMessage.getId(),newMessage);
                             addToQueue(newMessage,userName);
                             dataSend.println(response);
                             System.out.println("OK: REPLY AND ADD TO DB");
-                            System.out.println(">>>>ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
-                            System.out.println(">>>>ServerTCP.messagesMap: "+ServerTCP.messagesMap);
+                            System.out.println(">>>>ServerTCP.userToMessagesMap: "+ ServerMasterTCP.userToMessagesMap);
+                            System.out.println(">>>>ServerTCP.messagesMap: "+ ServerMasterTCP.messagesMap);
                         }else{
                             System.out.println("ERROR: REPLY NOT ADD TO DB");
                         }
@@ -228,22 +228,22 @@ public class ClientHandler extends Thread {
                     System.out.println("ici>>>>>>>>>>>>>>>>>:author: "+author+" message Id: "+msg_id);
                     if(msg_id != -1) {
                         response ="user that republish"+"$"+author+"$"+
-                                "user that publish:"+"$"+ServerTCP.messagesMap.get(msg_id).getUsername() +"$"+
-                                "message:"+"$"+ServerTCP.messagesMap.get(msg_id).getMessage()+"$"+"OK";
+                                "user that publish:"+"$"+ ServerMasterTCP.messagesMap.get(msg_id).getUsername() +"$"+
+                                "message:"+"$"+ ServerMasterTCP.messagesMap.get(msg_id).getMessage()+"$"+"OK";
 
                         User user = new User(userDb.getLastUserId(),author);
-                        Message newMessage = new Message(messageDb.getLastMessageId(),ServerTCP.messagesMap.get(msg_id).getMessage(),user,true);
+                        Message newMessage = new Message(messageDb.getLastMessageId(), ServerMasterTCP.messagesMap.get(msg_id).getMessage(),user,true);
 
                         //DataBase
                         int value =messageDb.NewMessage(newMessage);
                         if(value == 1){
-                            ServerTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),author)).add(newMessage);
-                            ServerTCP.messagesMap.put(newMessage.getId(),newMessage);
+                            ServerMasterTCP.userToMessagesMap.get(new User(userDb.getLastUserId(),author)).add(newMessage);
+                            ServerMasterTCP.messagesMap.put(newMessage.getId(),newMessage);
                             addToQueue(newMessage,userName);
                             dataSend.println(response);
                             System.out.println("OK: REPUBLISH AND ADD TO DB");
-                            System.out.println(">>>>ServerTCP.userToMessagesMap: "+ServerTCP.userToMessagesMap);
-                            System.out.println(">>>>ServerTCP.messagesMap: "+ServerTCP.messagesMap);
+                            System.out.println(">>>>ServerTCP.userToMessagesMap: "+ ServerMasterTCP.userToMessagesMap);
+                            System.out.println(">>>>ServerTCP.messagesMap: "+ ServerMasterTCP.messagesMap);
                         }else{
                             System.out.println("ERROR: REPUBLISH NOT ADD TO DB");
                         }
@@ -263,7 +263,7 @@ public class ClientHandler extends Thread {
                     for (String author : authors) {
                         if (author != null) {
                             List<Message> messages = new ArrayList<>();
-                            for (Message message : ServerTCP.messagesMap.values()) {
+                            for (Message message : ServerMasterTCP.messagesMap.values()) {
                                 if (message.getStrUser().equals(author)) {
                                     messages.add(message);
                                 }
@@ -293,10 +293,10 @@ public class ClientHandler extends Thread {
                         System.out.println("----code----");
                         responseError=true;
                         this.userName = new User(tableData[1]);
-                        if(!ServerTCP.userToMessagesMap.containsKey( this.userName )){
-                            ServerTCP.clientFollowers.put( this.userName ,new ArrayList<>());
-                            ServerTCP.userToMessagesMap.put( this.userName ,new ArrayList<>());
-                            ServerTCP.userQueue.put( this.userName ,new ConcurrentLinkedQueue<>());
+                        if(!ServerMasterTCP.userToMessagesMap.containsKey( this.userName )){
+                            ServerMasterTCP.clientFollowers.put( this.userName ,new ArrayList<>());
+                            ServerMasterTCP.userToMessagesMap.put( this.userName ,new ArrayList<>());
+                            ServerMasterTCP.userQueue.put( this.userName ,new ConcurrentLinkedQueue<>());
                         }
                     }
                     if(responseError){
@@ -315,8 +315,8 @@ public class ClientHandler extends Thread {
                     if(tableData[0].equals("author:")){
                         User author = new User( tableData[1]);
                         //code
-                        if(ServerTCP.clientFollowers.containsKey(author)){
-                            ServerTCP.clientFollowers.get(author).add(this.userName);
+                        if(ServerMasterTCP.clientFollowers.containsKey(author)){
+                            ServerMasterTCP.clientFollowers.get(author).add(this.userName);
                             System.out.println("ok");
                             dataSend.println("OK: Subscribe");
                         }else{
@@ -326,12 +326,12 @@ public class ClientHandler extends Thread {
                     }else if(tableData[0].equals("tag:")){
                         Tag tag = new Tag(tableData[1]);
                         //code
-                        if(ServerTCP.followersTags.containsKey(tag)){
-                            ServerTCP.followersTags.get(tag).add(this.userName);
+                        if(ServerMasterTCP.followersTags.containsKey(tag)){
+                            ServerMasterTCP.followersTags.get(tag).add(this.userName);
                             System.out.println("ok");
                             dataSend.println("OK: Subscribe");
                         }else{
-                            ServerTCP.followersTags.put(tag,new ArrayList<>());
+                            ServerMasterTCP.followersTags.put(tag,new ArrayList<>());
                             dataSend.println("OK: New tag created");
                         }
 
@@ -344,8 +344,8 @@ public class ClientHandler extends Thread {
                      if(tableData[0].equals("author:")){
                          User author = new User( tableData[1]);
                          //code
-                         if(ServerTCP.clientFollowers.containsKey(author)){
-                             ServerTCP.clientFollowers.get(author).remove(this.userName);
+                         if(ServerMasterTCP.clientFollowers.containsKey(author)){
+                             ServerMasterTCP.clientFollowers.get(author).remove(this.userName);
                              System.out.println("ok");
                              dataSend.println("OK: Unsubscribe");
                          }else{
@@ -355,8 +355,8 @@ public class ClientHandler extends Thread {
                      }else if(tableData[0].equals("tag:")){
                          Tag tag = new Tag(tableData[1]);
                          //code
-                         if(ServerTCP.followersTags.containsKey(tag)){
-                             ServerTCP.followersTags.get(tag).remove(this.userName);
+                         if(ServerMasterTCP.followersTags.containsKey(tag)){
+                             ServerMasterTCP.followersTags.get(tag).remove(this.userName);
                              System.out.println("ok");
                              dataSend.println("OK: Unsubscribe");
                          }else{
@@ -410,10 +410,10 @@ public class ClientHandler extends Thread {
 
     private void addToQueue(Message message,User user){
         System.out.println("ici entre");
-        List<User> userFollowers = ServerTCP.clientFollowers.get(user);
-        List<Tag>  tagMessages = new ArrayList<Tag>();
+        List<User> userFollowers = ServerMasterTCP.clientFollowers.get(user);
+        List<Tag>  tagMessages = new ArrayList<>();
         for (User follower: userFollowers) {
-            ServerTCP.userQueue.get(follower).add(message);
+            ServerMasterTCP.userQueue.get(follower).add(message);
         }
         System.out.println("tag");
         for(String word: message.getMessage().split(" ")){
@@ -422,10 +422,10 @@ public class ClientHandler extends Thread {
             }
         }
         for(Tag tag: tagMessages){
-            List<User> tagFollowers = ServerTCP.followersTags.get(tag);
+            List<User> tagFollowers = ServerMasterTCP.followersTags.get(tag);
             for (User follower: tagFollowers) {
                 if(!userFollowers.contains(follower)) {
-                    ServerTCP.userQueue.get(follower).add(message);
+                    ServerMasterTCP.userQueue.get(follower).add(message);
                     userFollowers.add(follower);
                 }
             }
@@ -434,7 +434,7 @@ public class ClientHandler extends Thread {
     }
 
     private void removeFromQueue(){
-        Queue<Message> messages =  ServerTCP.userQueue.get(userName);
+        Queue<Message> messages =  ServerMasterTCP.userQueue.get(userName);
         for(Message message = messages.poll(); message != null ; message = messages.poll()){
             dataSend.println("message:" +message);
         }

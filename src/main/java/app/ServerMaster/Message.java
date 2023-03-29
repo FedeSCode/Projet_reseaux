@@ -1,5 +1,4 @@
-package app.Server;
-import app.Server.User;
+package app.ServerMaster;
 
 public class Message {
     private final int id;

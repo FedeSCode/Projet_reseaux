@@ -1,7 +1,5 @@
 package app.Client;
 
-import app.Server.Message;
-
 public abstract class Request {
     abstract String entete();
     String message;
