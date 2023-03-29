@@ -1,8 +1,8 @@
 package app.Client;
 
-import app.Server.Login;
-import app.Server.MessageDb;
-import app.Server.UserDb;
+import app.ServerMaster.Login;
+import app.ServerMaster.MessageDb;
+import app.ServerMaster.UserDb;
 
 import java.io.*;
 import java.net.InetSocketAddress;

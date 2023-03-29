@@ -1,4 +1,4 @@
-package app.Server;
+package app.ServerMaster;
 import java.sql.*;
 
 public class JDBC {

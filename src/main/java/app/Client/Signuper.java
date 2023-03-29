@@ -1,7 +1,7 @@
 package app.Client;
 
-import app.Server.Login;
-import app.Server.UserDb;
+import app.ServerMaster.Login;
+import app.ServerMaster.UserDb;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
