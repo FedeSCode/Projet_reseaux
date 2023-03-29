@@ -21,7 +21,7 @@ public class Republisher {
             author = Main.username;
 
             Request request = new Republish(author,messageId);
-            System.out.println("send req: " + request.sendRequest());
+//            System.out.println("send req: " + request.sendRequest());
 
             out.println(request.sendRequest());
             String response = serverResponse.readLine();
@@ -32,6 +32,7 @@ public class Republisher {
             String originalAuthor=data[3];
             String message = data[5];
             String serverFinalResponse = data[6];
+
 
             System.out.println(
                     "user: "+author+" republish:"+

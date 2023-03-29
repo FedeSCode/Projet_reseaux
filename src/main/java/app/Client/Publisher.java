@@ -35,7 +35,7 @@ public class Publisher {
 
 //                    out.println("PUBLISH" + username + " " + userInput);
             Request request = new Publish(Main.username, userInput);
-            System.out.println("send req: " + request.sendRequest());
+//            System.out.println("send req: " + request.sendRequest());
 
             out.println(request.sendRequest());
             System.out.println("send"+(serverResponse));

@@ -193,7 +193,7 @@ public class ClientHandler extends Thread {
                     if(msg_id != -1) {
                         response ="user that reply"+"$"+author+"$"+
                                 "user that publish:"+"$"+ ServerMasterTCP.messagesMap.get(msg_id).getUsername() +"$"+
-                                "message origin:"+"$"+ ServerMasterTCP.messagesMap.get(msg_id).getMessage()+
+                                "message origin:"+"$"+ ServerMasterTCP.messagesMap.get(msg_id).getMessage()+"$"+
                                 "response:"+"$"+message+"$"+
                                 "id reply:"+"$"+msg_id+"$"+"OK";
                         User user = new User(userDb.getLastUserId(),author);
@@ -436,7 +436,7 @@ public class ClientHandler extends Thread {
     private void removeFromQueue(){
         Queue<Message> messages =  ServerMasterTCP.userQueue.get(userName);
         for(Message message = messages.poll(); message != null ; message = messages.poll()){
-            dataSend.println("message:" +message);
+            dataSend.println("Id of message:"+message.getId()+" "+"||message:" +message+"||"+" "+"publish by:"+message.getUsername());
         }
     }
 

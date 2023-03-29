@@ -48,7 +48,7 @@ public class Signuper {
                 if (password.equals(checkPassword)) {
                     login.isAuth(username, password, checkPassword);
                     Request request = new Signup(username,password);
-                    System.out.println("send req: " + request.sendRequest());
+//                    System.out.println("send req: " + request.sendRequest());
                     out.println(request.sendRequest());
                     String response;
                     response = serverResponse.readLine();

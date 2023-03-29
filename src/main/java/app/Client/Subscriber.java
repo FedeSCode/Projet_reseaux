@@ -28,7 +28,7 @@ public class Subscriber {
             }
             //wait for messages
             assert request != null;
-            System.out.println("send req: " + request.sendRequest());
+//            System.out.println("send req: " + request.sendRequest());
 
             out.println(request.sendRequest());
 

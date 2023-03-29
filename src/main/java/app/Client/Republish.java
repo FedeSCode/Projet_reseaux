@@ -11,6 +11,6 @@ public class Republish extends Request{
 
     @Override
     String entete() {
-        return "REPUBLISH"+" "+"author:"+" "+author+" "+"msg_id:"+" "+ messageId;
+        return "REPUBLISH"+" "+"author:"+" "+author+" "+"msg_id:"+" "+messageId;
     }
 }

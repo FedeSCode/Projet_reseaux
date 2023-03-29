@@ -28,12 +28,12 @@ public class Unsubscriber {
             }
             //wait for messages
             assert request != null;
-            System.out.println("send req: " + request.sendRequest());
+//            System.out.println("send req: " + request.sendRequest());
 
             out.println(request.sendRequest());
 
             String response = serverResponse.readLine();
-            System.out.println("send" + (serverResponse));
+//            System.out.println("send" + (serverResponse));
             System.out.println("Server response: \n" + response);
             System.out.println(separator);
 

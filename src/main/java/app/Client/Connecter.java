@@ -15,16 +15,19 @@ public class Connecter {
             author = Main.username;
 
             Request request = new Connect(author);
-            System.out.println("send req: " + request.sendRequest());
+//            System.out.println("send req: " + request.sendRequest());
 
             out.println(request.sendRequest());
             String response = serverResponse.readLine();
-
+            boolean isOk=false;
             while(!response.startsWith("OK")) {
-                System.out.println("Message received: " + response);
+                System.out.println(response);
                 response = serverResponse.readLine();
+                isOk=true;
             }
-
+            if(isOk) {
+                System.out.println("OK");
+            }
             System.out.println(separator);
 
         } catch (Exception e) {

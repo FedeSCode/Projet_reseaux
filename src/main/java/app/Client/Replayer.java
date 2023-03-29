@@ -41,13 +41,29 @@ public class Replayer {
             }
 
             Request request = new Reply(idMessage,username,message);
-            System.out.println("send req: " + request.sendRequest());
+//            System.out.println("send req: " + request.sendRequest());
 
             out.println(request.sendRequest());
 
             String response = serverResponse.readLine();
-            System.out.println("send"+(serverResponse));
-            System.out.println("Server response: \n" + response);
+//            System.out.println("send"+(serverResponse));
+//            System.out.println("Server response: \n" + response);
+
+            String[] data = response.split("\\$");
+            String originalAuthor=data[3];
+            String originalMessage=data[5];
+            String messageResponse = data[7];
+            String idOriginalMessage=data[9];
+            String serverFinalResponse = data[10];
+
+            System.out.println(
+                    separator+"\n"+"original message Id: "+idOriginalMessage+" User that publish: "+originalAuthor+" \n"+
+                            "message: "+originalMessage+" \n"+
+                            "Replay: \n"+
+                            messageResponse+"\n"
+                    );
+            System.out.println("Server response: "+serverFinalResponse);
+
             System.out.println(separator);
 
         } catch (Exception e) {

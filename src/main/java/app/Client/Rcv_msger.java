@@ -32,7 +32,7 @@ public class Rcv_msger {
             Request request = new Rcv_msg(String.valueOf(var));
 
 
-            System.out.println("send req: " + request.sendRequest());
+//            System.out.println("send req: " + request.sendRequest());
             out.println(request.sendRequest());
             String response;
 

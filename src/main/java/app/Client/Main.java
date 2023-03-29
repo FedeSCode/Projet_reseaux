@@ -18,19 +18,17 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         String separator =             "--------------------------------------------------------------------------------------";
-        String connecting =              "----------------------------------------Connecting--------------------------------------";
-        String log_in =                 "---------------------------------------Login------------------------------------------";
-        String sing_up =                "---------------------------------------Sing-up----------------------------------------";
+        String connecting =            "----------------------------------------Connecting------------------------------------";
+        String log_in =                "---------------------------------------Login------------------------------------------";
+        String sing_up =               "---------------------------------------Sing-up----------------------------------------";
         String connectionToServer =    "-----------------------------------Connected to Server--------------------------------";
         String fakeBook =              "-----------------------------------FakeBook-------------------------------------------";
         String disconnectedFromServer= "------------------------------Disconnected From Server--------------------------------";
-        MessageDb messageDb = new MessageDb();
         UserDb userDb = new UserDb();
 
         scanner = new Scanner(System.in);
 
-
-
+//        InetSocketAddress localhost = new InetSocketAddress("10.192.27.159", PORT);
         InetSocketAddress localhost = new InetSocketAddress("localhost", PORT);
         Socket clientSocket = new Socket();
 
@@ -52,10 +50,9 @@ public class Main {
         while(!isAuth){
             System.out.println("1.Login \n2.Sign-up");
             String home = userIn.readLine();
-            String password = null;
-            String checkPassword = null;
+            String password = "";
+            String checkPassword = "";
             Login login = new Login(username,password,checkPassword);
-
             if(home.equals("1")){
                 System.out.println(log_in);
                 System.out.print("Enter your username user: ");
