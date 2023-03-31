@@ -70,9 +70,9 @@ message VARCHAR(255) NOT NULL,
 CONSTRAINT FK_usernameIdMessages FOREIGN KEY messages(usernameID) REFERENCES users(id)
 );
 
-INSERT INTO USERS (username,password) VALUES("@federico","0000");
-INSERT INTO USERS (username,password) VALUES("@lina","123");
-INSERT INTO USERS (username,password) VALUES("@test","123a");
+INSERT INTO USERS (username,password) VALUES("@fedeCode","0000");
+INSERT INTO USERS (username,password) VALUES("@test","123");
+INSERT INTO USERS (username,password) VALUES("@test2","123a");
 INSERT INTO messages (usernameID, username, message)
 SELECT id, '@lina', 'holaaaaaaa' FROM users
 WHERE username = '@lina';
