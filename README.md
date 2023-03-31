@@ -38,8 +38,8 @@ Utliser le clavier pour faire des choix, tout ce qui est sur le tableau de bord 
 <div style="font-size: 1.2rem;">
 
 On peut faire des recherches avec plusieurs filtres.<Br>
-Pour faire cela tapez sur le filtre desire entre votre choix, recommencez. <Br> 
-Quand vous êtes sûr de vos choix taper sur le 5 pour envoyer la requête
+Pour faire cela tapez sur le filtre desire, entrez votre choix, recommencez. <Br> 
+Quand vous êtes sûr de vos choix tapez sur le 5 pour envoyer la requête
 
 </div>
 
