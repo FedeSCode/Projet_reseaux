@@ -12,11 +12,13 @@ AIT-RAZZOUK Lina
 
 ---------------------------
 
+    
 `Welcome to FAKEBOOK`
+    
 
 ---
 
-##`instructions dutilisation`
+`instructions dutilisation`
 <div dir="ltr" align="left" style="margin: 0 25%"> 
     <ul style="font-size: 1.2rem;">
     <li>Créer une basse de donnes MySql PROJECT dans localhost. (regarder le code sql à la fin du README) </li> 
