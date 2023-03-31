@@ -74,8 +74,8 @@ INSERT INTO USERS (username,password) VALUES("@fedeCode","0000");
 INSERT INTO USERS (username,password) VALUES("@test","123");
 INSERT INTO USERS (username,password) VALUES("@test2","123a");
 INSERT INTO messages (usernameID, username, message)
-SELECT id, '@lina', 'holaaaaaaa' FROM users
-WHERE username = '@lina';
+SELECT id, '@test', 'holaaaaaaa' FROM users
+WHERE username = '@test';
 INSERT INTO messages (usernameID, username, message)
 SELECT id, '@federico', 'hello fede' FROM users
 WHERE username = '@federico';
