@@ -78,8 +78,8 @@ INSERT INTO messages (usernameID, username, message)
 SELECT id, '@test', 'holaaaaaaa' FROM users
 WHERE username = '@test';
 INSERT INTO messages (usernameID, username, message)
-SELECT id, '@federico', 'hello fede' FROM users
-WHERE username = '@federico';
+SELECT id, '@fedeCode', 'hello fedeCode' FROM users
+WHERE username = '@fedeCode';
 
 SELECT * from messages;
 SELECT * from users;
