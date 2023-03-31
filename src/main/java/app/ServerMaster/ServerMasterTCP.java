@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 public class ServerMasterTCP extends  Thread{
     public static final int PORT = 12345;
+//    public static final int PORT = 8080;
     static HashMap<Integer,Message> messagesMap = new HashMap<>();
     static HashMap<User,List<Message>> userToMessagesMap = new HashMap<>();
     static MessageDb messageDb = new MessageDb();
